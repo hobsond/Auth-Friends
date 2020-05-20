@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Route,Switch,Redirect} from 'react-router-dom'
+import {Route,Switch,Redirect,Link} from 'react-router-dom'
 import {newToken, axiosWithAuth } from './utils/axiosAuth'
 import PrivateRoute from './utils/PrivateRoute'
 import Login from './components/Login'
@@ -76,6 +76,10 @@ function App(props) {
 
   return (
     <div className="App">
+      <nav>
+        <Link to='/login'>Login</Link>
+        <Link to='/'>Home</Link>
+      </nav>
       <Switch>
         <PrivateRoute path={`/home`} components={UserHome} />
 

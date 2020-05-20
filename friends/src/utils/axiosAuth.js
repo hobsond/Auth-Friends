@@ -15,6 +15,7 @@ export const newToken = (init)=>{
           .then(res=>{
               localStorage.setItem('token', res.data.payload)
               localStorage.setItem('user',init.username)
+             return <Redirect path='/home'/>
           })
           .catch(err=>err)
 }
