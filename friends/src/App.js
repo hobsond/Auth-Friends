@@ -79,8 +79,9 @@ function App(props) {
       <Switch>
         <PrivateRoute path={`/home`} components={UserHome} />
 
-        <Route path='/login'>
+        <Route {...props} path='/login'>
           <Login 
+          {...props}
           // login={login}
            value={inputValue} 
            changeHandle={changeHandle} />

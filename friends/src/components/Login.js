@@ -7,7 +7,7 @@ export default function Login(props) {
         evt.preventDefault()
         
         newToken(props.value)
-       props.history.push('/home')
+       this.props.history.push('/')
         
         // return <Redirect to='/:id/Home'
       }
