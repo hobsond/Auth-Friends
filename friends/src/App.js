@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Route,Switch,Redirect} from 'react-router-dom'
+import {Route,Switch,Redirect,Link} from 'react-router-dom'
 import {newToken, axiosWithAuth } from './utils/axiosAuth'
+import {context as Context} from './utils/context'
+import {FunctionContext} from './utils/functionContext'
 import PrivateRoute from './utils/PrivateRoute'
 import Login from './components/Login'
 import Landing from './components/Landing'
@@ -26,20 +28,10 @@ function App(props) {
     setInputValue({...inputValue,[evt.target.name] : evt.target.value })
   }
 
-  // const login= (evt)=>{
-  //   evt.preventDefault()
-    
-  //   newToken(inputValue)
-  //   setLoggedIn(true)
-  //   setInputValue(inital)
-    
-  //   // return <Redirect to='/:id/Home'
-  // }
 
   const getFriends = ()=>{
     axiosWithAuth().get("http://localhost:5000/api/friends")
     .then(res=>{
-      console.log(res)
       setFriends(res.data)
     })
   
@@ -55,9 +47,11 @@ function App(props) {
     .catch(err=>console.log(err))
   }
   const addFriend = obj=>{
-    axiosWithAuth().get('http://localhost:5000/api/friends',obj)
+    axiosWithAuth().post('http://localhost:5000/api/friends',obj)
     .then(res=>{
       setFriends(res.data)
+      console.log(res.data)
+
     })
     .catch(err=>console.log(err))
   }
@@ -73,24 +67,54 @@ function App(props) {
     .then(res=>getFriends())
     .catch(err=>console.log(err))
   }
-
+  const logout = evt=>{
+    evt.preventDefault()
+    localStorage.removeItem('token')
+  }
   return (
     <div className="App">
-      <Switch>
-        <PrivateRoute path={`/home`} components={UserHome} />
+      <nav>
+        
+        {!localStorage.getItem('token') ?
+          <Link to='/login'>Login</Link>
+        :
+        <a onClick={logout}>Logout</a>}
 
-        <Route {...props} path='/login'>
-          <Login 
-          {...props}
-          // login={login}
-           value={inputValue} 
-           changeHandle={changeHandle} />
-        </Route>
+      </nav>
+      <FunctionContext.Provider value={
+        {
+          friends,
+          searchedFriend,
+          getFriends,
+          findFriend,
+          addFriend,
+          updateFriend,
+          deleteFriend,
+        }
+        
+        }>
+
+      <Context.Provider value={{inital,inputValue,changeHandle,setInputValue}}> 
+
+      <Switch>
+
+        
+        
+          <PrivateRoute components={UserHome} path='/home'/>
+
+
+          <Route value={inputValue} component={Login } path='/login'/>
 
         <Route path ='/' >
           <Landing />
         </Route>
       </Switch>
+
+      </Context.Provider>
+
+      </FunctionContext.Provider>
+
+
 
       
     </div>
